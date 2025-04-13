@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "name": "finance",
   "version": "1.0.0",
   "main": "app.js",
