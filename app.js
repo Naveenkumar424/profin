@@ -29,7 +29,7 @@ async function main(){
 
 //root
 app.get("/",(req,res)=>{
-    res.send("You are visiting home page");
+    res.redirect("/finance");
 });
 
 // Index route
