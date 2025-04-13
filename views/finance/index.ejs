@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance</title>
+</head>
+<body>
+    <h1>Finance</h1>
+    <p>Welcome to the finance page!</p>
+    <p>Here you can manage your financial records.</p>
+    <%for(finance of finances) {%>
+        <div class="finance-record" style="border:2px solid black">
+            <h2><%= finance.name %></h2>
+            <p>Amount: <%= finance.amount %></p>
+            <p>Date: <%= finance.date %></p>
+            <p>Category: <%= finance.category %></p>
+        </div>
+    <% } %>
+</body>
+</html>
