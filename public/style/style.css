@@ -6,6 +6,7 @@
 /* body */
 body{
     font-family: sans-serif;
+    height: 100vh;
 }
 
 
@@ -28,7 +29,7 @@ table{
     font-size: larger;
 }
 /* footer */
-.f-info-links a{
+/* .f-info-links a{
     text-decoration: none;
     color:#222222;
 }
@@ -55,5 +56,5 @@ table{
     flex-wrap: wrap;
     justify-content: center;
     align-items: space-evenly;
-}
+} */
 

@@ -1,0 +1,67 @@
+<% layout("./layouts/boilerplate") -%>
+<body>
+    <div class="row justify-content-center">
+        <div class="col-8 offser-3 my-5">
+            <form method="post" action="/finance" novalidate class="needs-validation">
+                <h4 class="mb-5">Add a new transaction</h4>
+                <div class="mb-5">
+                    <label for="name" class="form-label">Type</label>
+                    <select class="form-select" id="name" name="finance[name]" required>
+                        <option value="" disabled selected>Select type</option>
+                        <option value="credit">Credit</option>
+                        <option value="debit">Debit</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a type.
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="amount" name="finance[amount]" required>
+                    <div class="invalid-feedback">
+                        Please enter an amount.
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="finance[date]" required>
+                    <div class="invalid-feedback">
+                        Please select a date.
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" class="form-control" id="category" name="finance[category]" required>
+                    <div class="invalid-feedback">
+                        Please enter a category.
+                    </div>
+                </div>
+                <div class="col-auto justify-content-center">
+                    <button type="submit" class="btn btn-outline-success mb-2">Add Transaction</button>
+                    <button type="reset" class="btn btn-outline-danger mb-2">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (() => {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+            }, false)
+        })
+        })()
+    </script>
+</body>

@@ -33,9 +33,31 @@ app.get('/finance',async(req,res)=>{
     res.render("./finance/index",{finances:Finances});
 });
 
-app.listen('8080',()=>{
-    console.log("App listening on Port 8080");
+//new route
+app.get("/finance/new",(req,res)=>{
+    res.render("./finance/new");
 });
+
+
+//create route
+app.post("/finance",async(req,res)=>{
+    const newFinance = new Finance(req.body.finance);
+    await newFinance.save().then(()=>{
+        console.log("New Finance Created");
+    }).catch((err)=>{
+        console.log("Error:",err);
+    });
+    res.redirect("/finance");
+});
+
+//delete route
+app.delete("/finance/:id",async(req,res)=>{
+    const {id} = req.params;
+    await Finance.findByIdAndDelete(id);
+    res.redirect("/finance");
+});
+
+
 
 app.get('/finance/goals',(req,res)=>{
     res.send("Welcome ,Here you can set your goals...");
@@ -45,3 +67,6 @@ app.get('/finance/tax',(req,res)=>{
     res.send("Welcome ,Here you can calculate your tax...");
 });
 
+app.listen('8080',()=>{
+    console.log("App listening on Port 8080");
+});

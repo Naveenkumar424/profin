@@ -28,11 +28,19 @@
                 ₹<%=(credit-debit).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }).replace('₹', '')%>
             </div>
         </div>
-    </div>      
+    </div> 
+    <hr>
+    <br>
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <a href="/finance/new" class="btn btn-outline-primary">Add new transaction</a>
+        </div>
+    </div>
+    <br>
     <div class="row">
         <%for(finance of finances) {%>
             <hr>
-            <div class="row mb-2">
+            <div class="row mb-4">
                 <b>
                     <%= finance.name.toUpperCase() %>
                 </b>
@@ -42,6 +50,9 @@
                     on <%= finance.date.toLocaleDateString() %>
                     as <%= finance.category.charAt(0).toUpperCase() + finance.category.slice(1).toLowerCase() %>
                 </p>
+                <form action="/finance/<%= finance._id %>?_method=DELETE" method="POST" class="ml-2">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
             </div>
         <% } %>
     </div>
