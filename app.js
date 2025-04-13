@@ -27,6 +27,11 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
+//root
+app.get("/",(req,res)=>{
+    res.send("You are visiting home page");
+});
+
 // Index route
 app.get('/finance',async(req,res)=>{
     const Finances = await Finance.find();
