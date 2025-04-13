@@ -1,0 +1,59 @@
+/* card-style */
+.card{
+    margin: 4vw;
+}
+
+/* body */
+body{
+    font-family: sans-serif;
+}
+
+
+/* total */
+.totalDebit{
+    display: flex;
+    color:red;
+}
+
+.totalCredit{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color:green;
+}
+
+table{
+    display:flex;
+    padding-left: 25vw;
+    font-size: larger;
+}
+/* footer */
+.f-info-links a{
+    text-decoration: none;
+    color:#222222;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+.f-info-links,
+.f-info-socials{
+    width: 100%;
+    font-size: 1.5rem;
+}
+
+.f-info-socials i{
+    margin-right: 1rem;
+}
+
+.f-info{
+    text-align: center;
+    height:8rem;
+    background-color: #ebebeb;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+}
+

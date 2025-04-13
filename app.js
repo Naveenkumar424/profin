@@ -36,3 +36,12 @@ app.get('/finance',async(req,res)=>{
 app.listen('8080',()=>{
     console.log("App listening on Port 8080");
 });
+
+app.get('/finance/goals',(req,res)=>{
+    res.send("Welcome ,Here you can set your goals...");
+});
+
+app.get('/finance/tax',(req,res)=>{
+    res.send("Welcome ,Here you can calculate your tax...");
+});
+

@@ -1,21 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance</title>
-</head>
+<% layout("./layouts/boilerplate") -%>
 <body>
-    <h1>Finance</h1>
-    <p>Welcome to the finance page!</p>
-    <p>Here you can manage your financial records.</p>
-    <%for(finance of finances) {%>
-        <div class="finance-record" style="border:2px solid black">
-            <h2><%= finance.name %></h2>
-            <p>Amount: <%= finance.amount %></p>
-            <p>Date: <%= finance.date %></p>
-            <p>Category: <%= finance.category %></p>
+    <% const credit =  finances.reduce((total, finance) => finance.name.toLowerCase() === 'credit' ? total + finance.amount : total, 0) %>
+    <% const debit =  finances.reduce((total, finance) => finance.name.toLowerCase() === 'debit' ? total + finance.amount : total, 0) %>
+    <br>
+    <div class="container text-center mb-4">
+        <div class="row">
+          <div class="col text-right">
+            <blockquote class="blockquote">
+                <p class="mb-0">"Credit what comes in ,Debit what goes out"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+            </blockquote>
+          </div>
         </div>
-    <% } %>
+        <div class="row">
+            <div class="col totalCredit">
+                CREDIT
+                <br>
+                ₹<%=credit.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }).replace('₹', '')%>
+            </div>
+            <div class="col totalDebit">
+                DEBIT
+                <br>
+                ₹<%=debit.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }).replace('₹', '')%>
+            </div>
+            <div class="col">
+                LEFT 
+                <br>
+                ₹<%=(credit-debit).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }).replace('₹', '')%>
+            </div>
+        </div>
+    </div>      
+    <div class="row">
+        <%for(finance of finances) {%>
+            <hr>
+            <div class="row mb-2">
+                <b>
+                    <%= finance.name.toUpperCase() %>
+                </b>
+                <p>
+                    <%= finance.amount %>
+                    <br>
+                    on <%= finance.date.toLocaleDateString() %>
+                    as <%= finance.category.charAt(0).toUpperCase() + finance.category.slice(1).toLowerCase() %>
+                </p>
+            </div>
+        <% } %>
+    </div>
 </body>
 </html>
