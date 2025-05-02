@@ -13,6 +13,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
 app.engine("ejs",ejs_mate);
 app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname,"firebase")));
 
 MONGO_URL = "mongodb://127.0.0.1:27017/Finance";
 
@@ -27,9 +28,9 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
-//root
-app.get("/",(req,res)=>{
-    res.redirect("/finance");
+// Authenticate 
+app.get('/profin',async(req,res)=>{
+    res.render("./finance/auth");
 });
 
 // Index route
