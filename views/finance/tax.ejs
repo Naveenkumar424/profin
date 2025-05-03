@@ -1,0 +1,250 @@
+<% layout("./layouts/boilerplate") -%>
+
+<div class="container bg-light p-4 rounded">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center">Tax Calculator</h2>
+            <p class="text-muted text-center">Based on current Indian tax regimes as of <%= taxData.lastUpdated %></p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Your Income Details</h4>
+                </div>
+                <div class="card-body">
+                    <form id="taxCalculator">
+                        <div class="mb-3">
+                            <label for="annualIncome" class="form-label">Annual Income (₹)</label>
+                            <input type="number" class="form-control" id="annualIncome" value="<%= totalIncome %>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="taxRegime" class="form-label">Tax Regime</label>
+                            <select class="form-select" id="taxRegime">
+                                <option value="new">New Tax Regime</option>
+                                <option value="old">Old Tax Regime</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Additional fields for Old Tax Regime -->
+                        <div id="oldRegimeFields" style="display: none;">
+                            <div class="mb-3">
+                                <label for="section80C" class="form-label">Section 80C Investments (₹)</label>
+                                <input type="number" class="form-control" id="section80C" value="0">
+                                <small class="text-muted">Max: ₹1,50,000</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="section80D" class="form-label">Section 80D Health Insurance (₹)</label>
+                                <input type="number" class="form-control" id="section80D" value="0">
+                                <small class="text-muted">Max: ₹25,000</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="hraExemption" class="form-label">HRA Exemption (₹)</label>
+                                <input type="number" class="form-control" id="hraExemption" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="button" id="calculateButton" class="btn btn-primary">Calculate Tax</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="taxResult" style="display: none;">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h4>Tax Calculation Results</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Gross Annual Income:</strong> <span id="grossIncome"></span></p>
+                        <p><strong>Total Deductions:</strong> <span id="totalDeductions"></span></p>
+                        <p><strong>Taxable Income:</strong> <span id="taxableIncome"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Income Tax:</strong> <span id="incomeTax"></span></p>
+                        <p><strong>Cess (4%):</strong> <span id="cess"></span></p>
+                        <p class="text-success"><strong>Total Tax Liability:</strong> <span id="totalTax"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4>New Tax Regime</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Income Slab</th>
+                                <th>Tax Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% taxData.regimes[0].slabs.forEach(slab => { %>
+                                <tr>
+                                    <td><%= slab.income %></td>
+                                    <td><%= slab.rate %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                    <p class="mt-3 text-muted">* No deductions available under new tax regime</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h4>Old Tax Regime</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Income Slab</th>
+                                <th>Tax Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% taxData.regimes[1].slabs.forEach(slab => { %>
+                                <tr>
+                                    <td><%= slab.income %></td>
+                                    <td><%= slab.rate %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                    
+                    <h5 class="mt-4 mb-3">Available Deductions</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Deduction Type</th>
+                                <th>Maximum Limit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% taxData.regimes[1].deductions.forEach(deduction => { %>
+                                <tr>
+                                    <td><%= deduction.name %></td>
+                                    <td><%= deduction.amount %></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const taxRegimeSelect = document.getElementById('taxRegime');
+    const oldRegimeFields = document.getElementById('oldRegimeFields');
+    const calculateButton = document.getElementById('calculateButton');
+    const taxResult = document.getElementById('taxResult');
+    
+    // Toggle old regime fields based on selection
+    taxRegimeSelect.addEventListener('change', function() {
+        if (this.value === 'old') {
+            oldRegimeFields.style.display = 'block';
+        } else {
+            oldRegimeFields.style.display = 'none';
+        }
+    });
+    
+    // Calculate tax on button click
+    calculateButton.addEventListener('click', function() {
+        const annualIncome = parseFloat(document.getElementById('annualIncome').value) || 0;
+        const taxRegime = document.getElementById('taxRegime').value;
+        let taxableIncome = annualIncome;
+        let totalDeductions = 0;
+        
+        // Calculate tax based on regime
+        if (taxRegime === 'old') {
+            // Standard deduction
+            totalDeductions += 50000;
+            
+            // Section 80C
+            const section80C = Math.min(parseFloat(document.getElementById('section80C').value) || 0, 150000);
+            totalDeductions += section80C;
+            
+            // Section 80D
+            const section80D = Math.min(parseFloat(document.getElementById('section80D').value) || 0, 25000);
+            totalDeductions += section80D;
+            
+            // HRA Exemption
+            const hraExemption = parseFloat(document.getElementById('hraExemption').value) || 0;
+            totalDeductions += hraExemption;
+            
+            taxableIncome = Math.max(0, annualIncome - totalDeductions);
+        }
+        
+        // Calculate tax amount
+        let tax = 0;
+        if (taxRegime === 'new') {
+            // New tax regime calculation
+            if (taxableIncome > 1500000) {
+                tax += (taxableIncome - 1500000) * 0.3;
+                taxableIncome = 1500000;
+            }
+            if (taxableIncome > 1200000) {
+                tax += (taxableIncome - 1200000) * 0.2;
+                taxableIncome = 1200000;
+            }
+            if (taxableIncome > 900000) {
+                tax += (taxableIncome - 900000) * 0.15;
+                taxableIncome = 900000;
+            }
+            if (taxableIncome > 600000) {
+                tax += (taxableIncome - 600000) * 0.1;
+                taxableIncome = 600000;
+            }
+            if (taxableIncome > 300000) {
+                tax += (taxableIncome - 300000) * 0.05;
+            }
+        } else {
+            // Old tax regime calculation
+            if (taxableIncome > 1000000) {
+                tax += (taxableIncome - 1000000) * 0.3;
+                taxableIncome = 1000000;
+            }
+            if (taxableIncome > 500000) {
+                tax += (taxableIncome - 500000) * 0.2;
+                taxableIncome = 500000;
+            }
+            if (taxableIncome > 250000) {
+                tax += (taxableIncome - 250000) * 0.05;
+            }
+        }
+        
+        // Calculate cess
+        const cess = tax * 0.04;
+        const totalTax = tax + cess;
+        
+        // Display results
+        document.getElementById('grossIncome').textContent = '₹' + annualIncome.toLocaleString('en-IN');
+        document.getElementById('totalDeductions').textContent = '₹' + totalDeductions.toLocaleString('en-IN');
+        document.getElementById('taxableIncome').textContent = '₹' + (annualIncome - totalDeductions).toLocaleString('en-IN');
+        document.getElementById('incomeTax').textContent = '₹' + tax.toLocaleString('en-IN');
+        document.getElementById('cess').textContent = '₹' + cess.toLocaleString('en-IN');
+        document.getElementById('totalTax').textContent = '₹' + totalTax.toLocaleString('en-IN');
+        
+        taxResult.style.display = 'block';
+    });
+});
+</script>
