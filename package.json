@@ -20,7 +20,7 @@
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^5.1.0",
-    "firebase": "^8.10.1",
+    "firebase": "^11.6.1",
     "method-override": "^3.0.0"
   },
   "devDependencies": {
