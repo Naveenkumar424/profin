@@ -40,7 +40,7 @@ app.post("/signin", (req, res) => {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("Signed in user:", user);
-            res.redirect("/home");
+            res.redirect("/profin/home");
         })
         .catch((error) => {
             console.error("Error signing in:", error.code, error.message);
@@ -56,7 +56,7 @@ app.post("/signup", (req, res) => {
         .then((userCredential) => {
             const user = userCredential.user;
             console.log("New user created:", user);
-            res.redirect("/home");
+            res.redirect("/profin/home");
         })
         .catch((error) => {
             console.error("Error signing up:", error.code, error.message);
@@ -77,11 +77,15 @@ const isAuthenticated = (req, res, next) => {
 
 
 app.get("/profin",(req,res)=>{
-    res.render("./finance/index.ejs");
+    res.render("./profin/index.ejs");
 });
 
-app.get("/home",isAuthenticated,(req,res)=>{
-    res.render("./finance/profin.ejs");
+app.get("/profin/home",isAuthenticated,(req,res)=>{
+    res.render("./profin/profin.ejs");
+});
+
+app.get("/profin/finance",isAuthenticated,(req,res)=>{
+    res.render("/profin/finance");
 });
 
 app.listen(8080,(req,res)=>{
