@@ -99,7 +99,7 @@ app.get("/profin/finance",async(req,res)=>{
     const transactionData = await getDoc(transactionRef);
     console.log(transactionData.data());
 
-    // await res.render("./profin/finance",);
+    await res.render("./profin/finance",{transactions:transactionData.data()});
 });
 
 app.listen(8080,(req,res)=>{
