@@ -1,0 +1,7 @@
+<% layout("./layouts/boilerplate") -%>
+<h1>Transactions List</h1>
+    <ul>
+        <% transactions.forEach(transaction => { %>
+            <li><strong><%= transaction.description %></strong>: $<%= transaction.amount %> (Category: <%= transaction.category %>)</li>
+        <% }); %>
+    </ul>

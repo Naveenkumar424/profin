@@ -5,8 +5,18 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 // Import Firebase modules correctly
 const { initializeApp } = require("firebase/app");
-const { getFirestore } = require("firebase/firestore");
+const { getFirestore, doc, getDoc ,collection} = require("firebase/firestore");
 const { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword } = require("firebase/auth");
+// const admin = require("firebase-admin");
+
+// // Initialize Firebase Admin SDK
+// adm = admin.initializeApp({
+//     credential: admin.credential.applicationDefault(),
+//     projectId: "profin-af77e"
+// });
+
+// const db = adm.firestore(); // Ensure this is correctly initialized
+
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -39,11 +49,11 @@ app.post("/signin", (req, res) => {
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log("Signed in user:", user);
+            // console.log("Signed in user:", user);
             res.redirect("/profin/home");
         })
         .catch((error) => {
-            console.error("Error signing in:", error.code, error.message);
+            // console.error("Error signing in:", error.code, error.message);
             res.status(401).send("Invalid credentials: " + error.message);
         });
 });
@@ -55,11 +65,11 @@ app.post("/signup", (req, res) => {
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log("New user created:", user);
+            // console.log("New user created:", user);
             res.redirect("/profin/home");
         })
         .catch((error) => {
-            console.error("Error signing up:", error.code, error.message);
+            // console.error("Error signing up:", error.code, error.message);
             res.status(400).send("Error creating account: " + error.message);
         });
 });
@@ -84,8 +94,12 @@ app.get("/profin/home",isAuthenticated,(req,res)=>{
     res.render("./profin/profin.ejs");
 });
 
-app.get("/profin/finance",isAuthenticated,(req,res)=>{
-    res.render("/profin/finance");
+app.get("/profin/finance",async(req,res)=>{
+    const transactionRef = doc(db, "transactions", "rE3ulmS4LbMWKzJXG0LEJEN5"); // Replace "transactionId" with an actual document ID
+    const transactionData = await getDoc(transactionRef);
+    console.log(transactionData.data());
+
+    // await res.render("./profin/finance",);
 });
 
 app.listen(8080,(req,res)=>{
