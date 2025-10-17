@@ -7,15 +7,6 @@ const ejsMate = require("ejs-mate");
 const { initializeApp } = require("firebase/app");
 const { getFirestore, doc, getDoc ,collection} = require("firebase/firestore");
 const { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword } = require("firebase/auth");
-// const admin = require("firebase-admin");
-
-// // Initialize Firebase Admin SDK
-// adm = admin.initializeApp({
-//     credential: admin.credential.applicationDefault(),
-//     projectId: "profin-af77e"
-// });
-
-// const db = adm.firestore(); // Ensure this is correctly initialized
 
 
 app.set("view engine","ejs");
@@ -40,21 +31,55 @@ const firebaseConfig = {
 const appFirebase = initializeApp(firebaseConfig);
 
 // Use the initialized Firebase instance to create Firestore and Auth instances
-const db = getFirestore(appFirebase);
+// const db = getFirestore(appFirebase);
 const auth = getAuth(appFirebase);
 
+const admin = require("firebase-admin");
+const serviceAccount = require("./profin-key.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://profin-af77e.firebaseio.com" // Optional if using Realtime DB
+});
+
+// const auth = getAuth(admin.app());
+// const db = admin.firestore();
+const { Firestore } = require('@google-cloud/firestore');
+const firestore = new Firestore({
+  projectId: 'profin-af77e', // ✅ Your actual Firebase project ID
+  keyFilename: 'C:/Users/navee/OneDrive/Desktop/project/profin/profin-key.json' // ✅ Full path to your downloaded key
+});
+
+
+const collectionPath = 'fin'; // or whatever your collection is
+const parent = `projects/profin-af77e/databases/(default)/documents/${collectionPath}`;
+
+async function main() {
+  const snapshot = await firestore.collection('fin').get();
+  snapshot.forEach(doc => console.log(doc.id, doc.data()));
+}
+
+main();
+
+// async function listCollections(){
+//     const collections = await db.listCollections();
+//    collections.forEach(collection => {
+//        console.log(`- ${collection.id}`);
+//    });
+// }
+// listCollections();
 // ✅ Corrected Sign-In Route
 app.post("/signin", (req, res) => {
     const { email, password } = req.body;
     signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            // console.log("Signed in user:", user);
+            console.log("Signed in user:", user);
             res.redirect("/profin/home");
         })
         .catch((error) => {
-            // console.error("Error signing in:", error.code, error.message);
-            res.status(401).send("Invalid credentials: " + error.message);
+            console.error("Error signing in:", error.code, error.message);
+            res.send(`<script>alert("Invalid credentials!"); window.location.href='/profin';</script>`);
         });
 });
 
@@ -65,12 +90,10 @@ app.post("/signup", (req, res) => {
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            // console.log("New user created:", user);
             res.redirect("/profin/home");
         })
         .catch((error) => {
-            // console.error("Error signing up:", error.code, error.message);
-            res.status(400).send("Error creating account: " + error.message);
+            res.send(`<script>alert("Error creating account!"); window.location.href='/profin';</script>`);
         });
 });
 
@@ -91,16 +114,10 @@ app.get("/profin",(req,res)=>{
 });
 
 app.get("/profin/home",isAuthenticated,(req,res)=>{
-    res.render("./profin/profin.ejs");
+    res.render("./profin/profin.ejs",{user:auth.currentUser});
 });
 
-app.get("/profin/finance",async(req,res)=>{
-    const transactionRef = doc(db, "transactions", "rE3ulmS4LbMWKzJXG0LEJEN5"); // Replace "transactionId" with an actual document ID
-    const transactionData = await getDoc(transactionRef);
-    console.log(transactionData.data());
 
-    await res.render("./profin/finance",{transactions:transactionData.data()});
-});
 
 app.listen(8080,(req,res)=>{
     console.log("Server is running on port 8080");

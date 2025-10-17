@@ -1,28 +1,51 @@
-<%- layout("./layouts/boilerplate") -%>
+<% layout("./layouts/boilerplate") -%>
 <br><br>
+welcome to home page of profin lets track your finance <%= user.email %>
 <div class="row">
-    <div class="col text-center">
-        <h2>Profin</h2>
+    <div class="col">
+        Debit - 
+    </div>
+    <div class="col">
+        Credit - 
+    </div>
+    <div class="col">
+        Balance -
     </div>
 </div>
 <br><br>
-<div class="row">
-    <div class="col text-center">
-        Manage your finance
-    </div>
-</div>
-<br><br>
-<div class="row">
-    <div class="col text-center">
-        Finance <br>
-        See where your money goes?
-    </div>
-    <div class="col text-center">
-        Goals <br>
-        Big dreams? Store here..
-    </div>
-    <div class="col text-center">
-        Taxes <br>
-        Take benefits of tax regime!
+Add your transactions here
+<button class="btn-sml btn-light" data-bs-toggle="modal" data-bs-target="#add">Add</button>
+<div class="modal fade" id="add" tabindex="-1" aria-labelledby="addLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLabel">Add Transaction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="/profin/add-transaction">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" name="amount" id="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type</label>
+                        <select class="form-select" name="type" id="type" required>
+                            <option value="debit">Debit</option>
+                            <option value="credit">Credit</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" id="description" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="reset" class="btn btn-light">Clear</button>
+                    <button type="submit" class="btn btn-primary">Add Transaction</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
