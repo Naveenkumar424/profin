@@ -5,7 +5,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 // Import Firebase modules correctly
 const { initializeApp } = require("firebase/app");
-const { getFirestore, doc, getDoc ,collection} = require("firebase/firestore");
+// const { getFirestore, doc, getDoc ,collection} = require("firebase/firestore");
 const { getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword } = require("firebase/auth");
 
 
@@ -44,22 +44,22 @@ admin.initializeApp({
 
 // const auth = getAuth(admin.app());
 // const db = admin.firestore();
-const { Firestore } = require('@google-cloud/firestore');
-const firestore = new Firestore({
-  projectId: 'profin-af77e', // ✅ Your actual Firebase project ID
-  keyFilename: 'C:/Users/navee/OneDrive/Desktop/project/profin/profin-key.json' // ✅ Full path to your downloaded key
-});
+// const { Firestore } = require('@google-cloud/firestore');
+// const firestore = new Firestore({
+//   projectId: 'profin-af77e', // ✅ Your actual Firebase project ID
+//   keyFilename: 'C:/Users/navee/OneDrive/Desktop/project/profin/profin-key.json' // ✅ Full path to your downloaded key
+// });
 
+const db = admin.firestore();
 
-const collectionPath = 'fin'; // or whatever your collection is
-const parent = `projects/profin-af77e/databases/(default)/documents/${collectionPath}`;
+// async function main(){
+//     const collection = db.listCollections();
+//     (await collection).forEach(col => {
+//         console.log(`- ${col.id}`);
+//     });
+// };
 
-async function main() {
-  const snapshot = await firestore.collection('fin').get();
-  snapshot.forEach(doc => console.log(doc.id, doc.data()));
-}
-
-main();
+// main();
 
 // async function listCollections(){
 //     const collections = await db.listCollections();
@@ -117,8 +117,12 @@ app.get("/profin/home",isAuthenticated,(req,res)=>{
     res.render("./profin/profin.ejs",{user:auth.currentUser});
 });
 
-
+app.get("/profin/test",(req,res)=>{
+    admin.firestore().listCollections().then(res.send("Connected to firestore")).catch(res.send("Failed to connect to firestore"));
+});
 
 app.listen(8080,(req,res)=>{
     console.log("Server is running on port 8080");
 });
+
+console.log("Testing on console");
